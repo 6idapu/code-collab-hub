@@ -9,11 +9,17 @@ import { useCodeExecution } from '@/hooks/useCodeExecution';
 
 interface InterviewRoomProps {
   sessionId: string;
+  onExit: () => void;
 }
 
-export const InterviewRoom = ({ sessionId }: InterviewRoomProps) => {
-  const { session, currentUser, updateCode, updateLanguage, maxUsers } = useSession(sessionId);
+export const InterviewRoom = ({ sessionId, onExit }: InterviewRoomProps) => {
+  const { session, currentUser, updateCode, updateLanguage, leaveSession, markAsDone, maxUsers } = useSession(sessionId);
   const { executeCode, result, isExecuting } = useCodeExecution();
+
+  const handleExit = () => {
+    leaveSession();
+    onExit();
+  };
 
   if (!session) {
     return (
@@ -34,6 +40,9 @@ export const InterviewRoom = ({ sessionId }: InterviewRoomProps) => {
         users={session.users}
         maxUsers={maxUsers}
         currentUser={currentUser}
+        status={session.status || 'active'}
+        onExit={handleExit}
+        onMarkDone={markAsDone}
       />
 
       <div className="flex-1 flex flex-col overflow-hidden">

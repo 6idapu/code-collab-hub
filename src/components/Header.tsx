@@ -1,16 +1,19 @@
-import { Copy, Check, Users } from 'lucide-react';
+import { Copy, Check, Users, LogOut, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import type { User } from '@/types/interview';
+import type { User, SessionStatus } from '@/types/interview';
 
 interface HeaderProps {
   sessionId: string;
   users: User[];
   maxUsers: number;
   currentUser: User | null;
+  status: SessionStatus;
+  onExit: () => void;
+  onMarkDone: () => void;
 }
 
-export const Header = ({ sessionId, users, maxUsers, currentUser }: HeaderProps) => {
+export const Header = ({ sessionId, users, maxUsers, currentUser, status, onExit, onMarkDone }: HeaderProps) => {
   const [copied, setCopied] = useState(false);
 
   const shareUrl = `${window.location.origin}?session=${sessionId}`;
@@ -76,6 +79,33 @@ export const Header = ({ sessionId, users, maxUsers, currentUser }: HeaderProps)
               Share Link
             </>
           )}
+        </Button>
+
+        {status === 'active' ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onMarkDone}
+            className="gap-2 border-primary/50 text-primary hover:bg-primary/10"
+          >
+            <CheckCircle className="h-4 w-4" />
+            Done
+          </Button>
+        ) : (
+          <span className="text-sm text-primary font-medium flex items-center gap-1">
+            <CheckCircle className="h-4 w-4" />
+            Completed
+          </span>
+        )}
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onExit}
+          className="gap-2 border-destructive/50 text-destructive hover:bg-destructive/10"
+        >
+          <LogOut className="h-4 w-4" />
+          Exit
         </Button>
       </div>
     </header>
