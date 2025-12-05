@@ -1,14 +1,43 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { LandingPage } from '@/components/LandingPage';
+import { InterviewRoom } from '@/components/InterviewRoom';
+import { CapacityError } from '@/components/CapacityError';
+import { useSession } from '@/hooks/useSession';
 
 const Index = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
-  );
+  const [searchParams, setSearchParams] = useSearchParams();
+  const sessionIdFromUrl = searchParams.get('session');
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(sessionIdFromUrl);
+  
+  const { createSession, isAtCapacity } = useSession(activeSessionId);
+
+  useEffect(() => {
+    if (sessionIdFromUrl) {
+      setActiveSessionId(sessionIdFromUrl);
+    }
+  }, [sessionIdFromUrl]);
+
+  const handleCreateSession = () => {
+    const newSessionId = createSession();
+    setSearchParams({ session: newSessionId });
+    setActiveSessionId(newSessionId);
+  };
+
+  const handleGoHome = () => {
+    setSearchParams({});
+    setActiveSessionId(null);
+  };
+
+  if (isAtCapacity) {
+    return <CapacityError onGoHome={handleGoHome} />;
+  }
+
+  if (activeSessionId) {
+    return <InterviewRoom sessionId={activeSessionId} />;
+  }
+
+  return <LandingPage onCreateSession={handleCreateSession} />;
 };
 
 export default Index;
