@@ -34,7 +34,7 @@ const Index = () => {
   }
 
   if (activeSessionId) {
-    return <InterviewRoom sessionId={activeSessionId} />;
+    return <InterviewRoom sessionId={activeSessionId} onExit={handleGoHome} />;
   }
 
   return <LandingPage onCreateSession={handleCreateSession} />;

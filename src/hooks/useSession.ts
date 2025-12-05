@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { nanoid } from 'nanoid';
-import type { Session, User, Language } from '@/types/interview';
+import type { Session, User, Language, SessionStatus } from '@/types/interview';
 
 const MAX_USERS = 10;
 const STORAGE_PREFIX = 'interview_session_';
@@ -34,6 +34,7 @@ export const useSession = (sessionId: string | null) => {
       language: 'javascript',
       users: [],
       createdAt: Date.now(),
+      status: 'active',
     };
     localStorage.setItem(`${STORAGE_PREFIX}${id}`, JSON.stringify(newSession));
     return id;
@@ -94,6 +95,18 @@ export const useSession = (sessionId: string | null) => {
     setCurrentUser(null);
   }, [session, currentUser]);
 
+  const markAsDone = useCallback(() => {
+    if (!session) return;
+    
+    const updatedSession = {
+      ...session,
+      status: 'completed' as SessionStatus,
+    };
+    
+    localStorage.setItem(`${STORAGE_PREFIX}${session.id}`, JSON.stringify(updatedSession));
+    setSession(updatedSession);
+  }, [session]);
+
   useEffect(() => {
     if (!sessionId) return;
 
@@ -131,6 +144,7 @@ export const useSession = (sessionId: string | null) => {
     updateCode,
     updateLanguage,
     leaveSession,
+    markAsDone,
     maxUsers: MAX_USERS,
   };
 };
