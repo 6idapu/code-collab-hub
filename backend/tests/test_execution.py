@@ -45,7 +45,7 @@ class TestExecuteCode:
         assert "SyntaxError" in data["error"]
 
     def test_execute_javascript_returns_message(self, client: TestClient):
-        """Test executing JavaScript returns appropriate message."""
+        """Test executing JavaScript returns output."""
         response = client.post(
             "/api/v1/execute",
             json={"code": "console.log('Hello')", "language": "javascript"},
@@ -53,11 +53,11 @@ class TestExecuteCode:
         assert response.status_code == 200
 
         data = response.json()
-        assert "JavaScript" in data["output"] or "browser" in data["output"]
+        assert "Hello" in data["output"]
         assert data["error"] is None
 
     def test_execute_typescript_returns_message(self, client: TestClient):
-        """Test executing TypeScript returns appropriate message."""
+        """Test executing TypeScript returns output."""
         response = client.post(
             "/api/v1/execute",
             json={"code": "console.log('Hello')", "language": "typescript"},
@@ -65,7 +65,7 @@ class TestExecuteCode:
         assert response.status_code == 200
 
         data = response.json()
-        assert "JavaScript" in data["output"] or "TypeScript" in data["output"]
+        assert "Hello" in data["output"]
         assert data["error"] is None
 
     def test_execute_code_with_custom_timeout(self, client: TestClient):

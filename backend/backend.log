@@ -47,3 +47,47 @@ INFO:     127.0.0.1:59384 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:59398 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:59398 - "OPTIONS /api/v1/sessions/evhz2wbai3/users HTTP/1.1" 200 OK
 INFO:     127.0.0.1:59398 - "POST /api/v1/sessions/evhz2wbai3/users HTTP/1.1" 201 Created
+INFO:     127.0.0.1:45206 - "OPTIONS /api/v1/execute HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45206 - "POST /api/v1/execute HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40460 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40460 - "POST /api/v1/sessions/evhz2wbai3/users HTTP/1.1" 201 Created
+INFO:     127.0.0.1:40460 - "POST /api/v1/execute HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40460 - "OPTIONS /api/v1/sessions/evhz2wbai3/users/mb6tqpvr HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40460 - "DELETE /api/v1/sessions/evhz2wbai3/users/mb6tqpvr HTTP/1.1" 204 No Content
+INFO:     127.0.0.1:40460 - "POST /api/v1/sessions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:40460 - "GET /api/v1/sessions/imvyoinezq HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40460 - "OPTIONS /api/v1/sessions/imvyoinezq/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40460 - "POST /api/v1/sessions/imvyoinezq/users HTTP/1.1" 201 Created
+INFO:     127.0.0.1:40460 - "POST /api/v1/execute HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'app/services/execution.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [21950]
+INFO:     Started server process [26506]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'app/services/execution.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26506]
+INFO:     Started server process [26548]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'tests/test_execution.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26548]
+INFO:     Started server process [26711]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'tests/test_execution.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26711]
+INFO:     Started server process [26987]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
