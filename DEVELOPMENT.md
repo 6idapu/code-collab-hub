@@ -14,6 +14,21 @@ This will start:
 
 The frontend will automatically connect to the backend API.
 
+## Session Sharing & Real-Time Collaboration
+
+Once you create a session, you'll get a URL like:
+```
+http://localhost:5173/?session=abc123def456
+```
+
+**Share this link** with others to collaborate:
+- ✅ They'll join the **same session** (no new session created)
+- ✅ Real-time updates sync every second - see code changes live
+- ✅ All users see the same code and output
+- ✅ Session ID persists in URL - refreshing maintains your connection
+
+The frontend polls the backend every 1 second for live updates when users are connected.
+
 ## Individual Commands
 
 ### Backend Only
