@@ -1,0 +1,528 @@
+openapi: 3.0.0
+info:
+  title: CodeInterview Collaborative API
+  description: Real-time collaborative code interview platform API
+  version: 1.0.0
+  contact:
+    name: CodeInterview Team
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.codeinterview.app
+    description: Production server
+
+tags:
+  - name: Sessions
+    description: Interview session management endpoints
+  - name: Code Execution
+    description: Code execution and compilation endpoints
+  - name: Users
+    description: User management within sessions
+
+paths:
+  /api/v1/sessions:
+    post:
+      tags:
+        - Sessions
+      summary: Create a new interview session
+      description: Creates a new interview session with initial code and language
+      operationId: createSession
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                language:
+                  type: string
+                  enum: [javascript, typescript, python]
+                  default: javascript
+                  description: Programming language for the session
+                code:
+                  type: string
+                  default: '// Start coding here\nconsole.log("Hello, World!");'
+                  description: Initial code content
+              example:
+                language: javascript
+                code: '// Start coding here\nconsole.log("Hello, World!");'
+      responses:
+        '201':
+          description: Session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/sessions/{sessionId}:
+    get:
+      tags:
+        - Sessions
+      summary: Get session details
+      description: Retrieves the current state of an interview session
+      operationId: getSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9_-]{10}$'
+          description: The session ID
+      responses:
+        '200':
+          description: Session details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      tags:
+        - Sessions
+      summary: Update session
+      description: Updates session code or language
+      operationId: updateSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9_-]{10}$'
+          description: The session ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Updated code content
+                language:
+                  type: string
+                  enum: [javascript, typescript, python]
+                  description: Programming language for the session
+                status:
+                  type: string
+                  enum: [active, completed]
+                  description: Session status
+              example:
+                code: 'console.log("Updated code");'
+      responses:
+        '200':
+          description: Session updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Sessions
+      summary: Delete session
+      description: Deletes an interview session
+      operationId: deleteSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9_-]{10}$'
+          description: The session ID
+      responses:
+        '204':
+          description: Session deleted successfully
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/sessions/{sessionId}/users:
+    post:
+      tags:
+        - Users
+      summary: Join a session
+      description: Joins the current user to an interview session
+      operationId: joinSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9_-]{10}$'
+          description: The session ID
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: User's display name (auto-generated if not provided)
+              example:
+                name: SwiftCoder
+      responses:
+        '201':
+          description: User joined session successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Session at capacity or invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Session at capacity (max 10 users)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Users
+      summary: Get session users
+      description: Retrieves all users currently in a session
+      operationId: getSessionUsers
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9_-]{10}$'
+          description: The session ID
+      responses:
+        '200':
+          description: Users retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/sessions/{sessionId}/users/{userId}:
+    delete:
+      tags:
+        - Users
+      summary: Leave a session
+      description: Removes the user from an interview session
+      operationId: leaveSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9_-]{10}$'
+          description: The session ID
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-zA-Z0-9_-]{8}$'
+          description: The user ID
+      responses:
+        '204':
+          description: User left session successfully
+        '404':
+          description: Session or user not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/execute:
+    post:
+      tags:
+        - Code Execution
+      summary: Execute code
+      description: Executes code in the specified language
+      operationId: executeCode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+                - language
+              properties:
+                code:
+                  type: string
+                  description: Code to execute
+                language:
+                  type: string
+                  enum: [javascript, typescript, python]
+                  description: Programming language
+                timeout:
+                  type: integer
+                  default: 30000
+                  description: Execution timeout in milliseconds
+              example:
+                code: 'console.log("Hello, World!");'
+                language: javascript
+                timeout: 30000
+      responses:
+        '200':
+          description: Code executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionResult'
+        '400':
+          description: Invalid code or language
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '408':
+          description: Code execution timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/health:
+    get:
+      tags:
+        - Sessions
+      summary: Health check
+      description: Checks if the API is running and healthy
+      operationId: healthCheck
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+                  timestamp:
+                    type: string
+                    format: date-time
+
+components:
+  schemas:
+    Session:
+      type: object
+      required:
+        - id
+        - code
+        - language
+        - users
+        - createdAt
+        - status
+      properties:
+        id:
+          type: string
+          pattern: '^[a-zA-Z0-9_-]{10}$'
+          description: Unique session identifier
+        code:
+          type: string
+          description: Current code in the session
+        language:
+          type: string
+          enum: [javascript, typescript, python]
+          description: Programming language
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+          description: List of users in the session
+        createdAt:
+          type: integer
+          format: int64
+          description: Unix timestamp when session was created
+        status:
+          type: string
+          enum: [active, completed]
+          description: Current session status
+      example:
+        id: abcdef1234
+        code: 'console.log("Hello, World!");'
+        language: javascript
+        users:
+          - id: user12345
+            name: SwiftCoder
+            color: '#22d3ee'
+            joinedAt: 1702000000000
+        createdAt: 1702000000000
+        status: active
+
+    User:
+      type: object
+      required:
+        - id
+        - name
+        - color
+        - joinedAt
+      properties:
+        id:
+          type: string
+          pattern: '^[a-zA-Z0-9_-]{8}$'
+          description: Unique user identifier
+        name:
+          type: string
+          description: User's display name
+        color:
+          type: string
+          pattern: '^#[0-9a-fA-F]{6}$'
+          description: Assigned color for user identification (hex color)
+        joinedAt:
+          type: integer
+          format: int64
+          description: Unix timestamp when user joined the session
+      example:
+        id: user1234
+        name: SwiftCoder
+        color: '#22d3ee'
+        joinedAt: 1702000000000
+
+    ExecutionResult:
+      type: object
+      required:
+        - output
+        - executionTime
+      properties:
+        output:
+          type: string
+          description: Console output from code execution
+        error:
+          type: string
+          nullable: true
+          description: Error message if execution failed
+        executionTime:
+          type: number
+          format: double
+          description: Time taken to execute code in milliseconds
+      example:
+        output: 'Hello, World!'
+        error: null
+        executionTime: 2.5
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code or type
+        message:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+      example:
+        error: INVALID_REQUEST
+        message: Invalid request parameters
+        statusCode: 400
