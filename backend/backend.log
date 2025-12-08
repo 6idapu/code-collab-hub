@@ -91,3 +91,13 @@ INFO:     Finished server process [26711]
 INFO:     Started server process [26987]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
+INFO:     127.0.0.1:38422 - "POST /api/v1/execute HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42586 - "POST /api/v1/execute HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42594 - "POST /api/v1/execute HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51654 - "GET /api/v1/sessions/imvyoinezq HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:38928 - "OPTIONS /api/v1/sessions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38928 - "POST /api/v1/sessions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:38928 - "GET /api/v1/sessions/bnkarzv2u2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38928 - "OPTIONS /api/v1/sessions/bnkarzv2u2/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38928 - "POST /api/v1/sessions/bnkarzv2u2/users HTTP/1.1" 201 Created
+INFO:     127.0.0.1:38928 - "POST /api/v1/execute HTTP/1.1" 200 OK
