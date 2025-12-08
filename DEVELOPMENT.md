@@ -10,7 +10,7 @@ npm run dev
 
 This will start:
 - **Backend**: FastAPI server at `http://localhost:8000`
-- **Frontend**: React dev server at `http://localhost:5173` (or configured port)
+- **Frontend**: React dev server at `http://localhost:8080`
 
 The frontend will automatically connect to the backend API.
 
@@ -18,7 +18,7 @@ The frontend will automatically connect to the backend API.
 
 Once you create a session, you'll get a URL like:
 ```
-http://localhost:5173/?session=abc123def456
+http://localhost:8080/?session=abc123def456
 ```
 
 **Share this link** with others to collaborate:
