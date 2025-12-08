@@ -57,7 +57,7 @@ async def join_session(session_id: str, request: JoinSessionRequest | None = Non
     Raises:
         HTTPException: If session not found or at capacity
     """
-    session = db.get_session(session_id)
+    session = db.get_session_by_id(session_id)
     if not session:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -131,7 +131,7 @@ async def leave_session(session_id: str, user_id: str):
     Raises:
         HTTPException: If session or user not found
     """
-    session = db.get_session(session_id)
+    session = db.get_session_by_id(session_id)
     if not session:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
