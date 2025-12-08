@@ -1,150 +1,147 @@
-import { useState, useEffect, useCallback } from 'react';
-import { nanoid } from 'nanoid';
+import { useState, useCallback } from 'react';
 import type { Session, User, Language, SessionStatus } from '@/types/interview';
+import { sessionsApi, usersApi, ApiError } from '@/services/api';
 
 const MAX_USERS = 10;
-const STORAGE_PREFIX = 'interview_session_';
-const USER_COLORS = [
-  '#22d3ee', '#a78bfa', '#f472b6', '#fbbf24', 
-  '#34d399', '#fb7185', '#60a5fa', '#c084fc',
-  '#4ade80', '#f97316'
-];
-
-const getRandomColor = (existingColors: string[]): string => {
-  const available = USER_COLORS.filter(c => !existingColors.includes(c));
-  return available[Math.floor(Math.random() * available.length)] || USER_COLORS[0];
-};
-
-const generateUserName = (): string => {
-  const adjectives = ['Swift', 'Clever', 'Bold', 'Calm', 'Eager'];
-  const nouns = ['Coder', 'Dev', 'Hacker', 'Builder', 'Creator'];
-  return `${adjectives[Math.floor(Math.random() * adjectives.length)]}${nouns[Math.floor(Math.random() * nouns.length)]}`;
-};
 
 export const useSession = (sessionId: string | null) => {
   const [session, setSession] = useState<Session | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAtCapacity, setIsAtCapacity] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const createSession = useCallback((): string => {
-    const id = nanoid(10);
-    const newSession: Session = {
-      id,
-      code: '// Start coding here\nconsole.log("Hello, World!");',
-      language: 'javascript',
-      users: [],
-      createdAt: Date.now(),
-      status: 'active',
-    };
-    localStorage.setItem(`${STORAGE_PREFIX}${id}`, JSON.stringify(newSession));
-    return id;
-  }, []);
-
-  const joinSession = useCallback((session: Session): User | null => {
-    if (session.users.length >= MAX_USERS) {
-      setIsAtCapacity(true);
-      return null;
+  const createSession = useCallback(async (): Promise<string> => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const newSession = await sessionsApi.create(
+        'javascript',
+        '// Start coding here\nconsole.log("Hello, World!");'
+      );
+      setSession(newSession);
+      return newSession.id;
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Failed to create session';
+      setError(message);
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
-
-    const existingColors = session.users.map(u => u.color);
-    const user: User = {
-      id: nanoid(8),
-      name: generateUserName(),
-      color: getRandomColor(existingColors),
-      joinedAt: Date.now(),
-    };
-
-    const updatedSession = {
-      ...session,
-      users: [...session.users, user],
-    };
-    
-    localStorage.setItem(`${STORAGE_PREFIX}${session.id}`, JSON.stringify(updatedSession));
-    setSession(updatedSession);
-    setCurrentUser(user);
-    
-    return user;
   }, []);
 
-  const updateCode = useCallback((code: string) => {
+  const joinSession = useCallback(async (sessionId: string): Promise<User | null> => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Fetch the session first
+      const sessionData = await sessionsApi.get(sessionId);
+      setSession(sessionData);
+
+      // Then join the session
+      const user = await usersApi.join(sessionId);
+      setCurrentUser(user);
+      setIsAtCapacity(false);
+      
+      return user;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.statusCode === 409) {
+          setIsAtCapacity(true);
+          setError('Session is at capacity');
+          return null;
+        }
+        setError(err.message);
+      } else {
+        setError('Failed to join session');
+      }
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const updateCode = useCallback(async (code: string) => {
     if (!session) return;
     
-    const updatedSession = { ...session, code };
-    localStorage.setItem(`${STORAGE_PREFIX}${session.id}`, JSON.stringify(updatedSession));
-    setSession(updatedSession);
+    try {
+      setError(null);
+      const updated = await sessionsApi.update(session.id, { code });
+      setSession(updated);
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Failed to update code';
+      setError(message);
+    }
   }, [session]);
 
-  const updateLanguage = useCallback((language: Language) => {
+  const updateLanguage = useCallback(async (language: Language) => {
     if (!session) return;
     
-    const updatedSession = { ...session, language };
-    localStorage.setItem(`${STORAGE_PREFIX}${session.id}`, JSON.stringify(updatedSession));
-    setSession(updatedSession);
+    try {
+      setError(null);
+      const updated = await sessionsApi.update(session.id, { language });
+      setSession(updated);
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Failed to update language';
+      setError(message);
+    }
   }, [session]);
 
-  const leaveSession = useCallback(() => {
+  const leaveSession = useCallback(async () => {
     if (!session || !currentUser) return;
     
-    const updatedSession = {
-      ...session,
-      users: session.users.filter(u => u.id !== currentUser.id),
-    };
-    
-    localStorage.setItem(`${STORAGE_PREFIX}${session.id}`, JSON.stringify(updatedSession));
-    setSession(null);
-    setCurrentUser(null);
+    try {
+      setError(null);
+      await usersApi.leave(session.id, currentUser.id);
+      setSession(null);
+      setCurrentUser(null);
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Failed to leave session';
+      setError(message);
+    }
   }, [session, currentUser]);
 
-  const markAsDone = useCallback(() => {
+  const markAsDone = useCallback(async () => {
     if (!session) return;
     
-    const updatedSession = {
-      ...session,
-      status: 'completed' as SessionStatus,
-    };
-    
-    localStorage.setItem(`${STORAGE_PREFIX}${session.id}`, JSON.stringify(updatedSession));
-    setSession(updatedSession);
+    try {
+      setError(null);
+      const updated = await sessionsApi.update(session.id, { status: 'completed' });
+      setSession(updated);
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Failed to mark session as done';
+      setError(message);
+    }
   }, [session]);
 
-  useEffect(() => {
-    if (!sessionId) return;
-
-    const stored = localStorage.getItem(`${STORAGE_PREFIX}${sessionId}`);
-    if (stored) {
-      const parsed = JSON.parse(stored) as Session;
-      setSession(parsed);
-      
-      if (!currentUser) {
-        joinSession(parsed);
-      }
+  const loadSession = useCallback(async (id: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const sessionData = await sessionsApi.get(id);
+      setSession(sessionData);
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Failed to load session';
+      setError(message);
+    } finally {
+      setIsLoading(false);
     }
-  }, [sessionId, currentUser, joinSession]);
-
-  // Sync with localStorage changes (for multi-tab support)
-  useEffect(() => {
-    if (!sessionId) return;
-
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === `${STORAGE_PREFIX}${sessionId}` && e.newValue) {
-        const updated = JSON.parse(e.newValue) as Session;
-        setSession(updated);
-      }
-    };
-
-    window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
-  }, [sessionId]);
+  }, []);
 
   return {
     session,
     currentUser,
     isAtCapacity,
+    isLoading,
+    error,
     createSession,
+    joinSession,
     updateCode,
     updateLanguage,
     leaveSession,
     markAsDone,
+    loadSession,
     maxUsers: MAX_USERS,
   };
 };

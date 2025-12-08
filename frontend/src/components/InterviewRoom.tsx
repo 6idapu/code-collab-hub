@@ -1,5 +1,7 @@
 import { Play } from 'lucide-react';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Header } from './Header';
 import { CodeEditor } from './CodeEditor';
 import { LanguageSelector } from './LanguageSelector';
@@ -13,15 +15,37 @@ interface InterviewRoomProps {
 }
 
 export const InterviewRoom = ({ sessionId, onExit }: InterviewRoomProps) => {
-  const { session, currentUser, updateCode, updateLanguage, leaveSession, markAsDone, maxUsers } = useSession(sessionId);
+  const {
+    session,
+    currentUser,
+    updateCode,
+    updateLanguage,
+    leaveSession,
+    markAsDone,
+    loadSession,
+    maxUsers,
+    isLoading,
+    error,
+  } = useSession(sessionId);
   const { executeCode, result, isExecuting } = useCodeExecution();
 
-  const handleExit = () => {
-    leaveSession();
+  // Load session on mount
+  useEffect(() => {
+    if (sessionId) {
+      loadSession(sessionId);
+    }
+  }, [sessionId, loadSession]);
+
+  const handleExit = async () => {
+    await leaveSession();
     onExit();
   };
 
-  if (!session) {
+  const handleRun = async () => {
+    await executeCode(session!.code, session!.language);
+  };
+
+  if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center bg-background">
         <div className="text-muted-foreground">Loading session...</div>
@@ -29,9 +53,23 @@ export const InterviewRoom = ({ sessionId, onExit }: InterviewRoomProps) => {
     );
   }
 
-  const handleRun = () => {
-    executeCode(session.code, session.language);
-  };
+  if (error) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background p-4">
+        <Alert variant="destructive" className="max-w-md">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (!session || !currentUser) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <div className="text-muted-foreground">Initializing session...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex flex-col bg-background">

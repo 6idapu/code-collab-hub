@@ -2,10 +2,11 @@ import { Plus, Code2, Users, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface LandingPageProps {
-  onCreateSession: () => void;
+  onCreateSession: () => Promise<void>;
+  isCreating?: boolean;
 }
 
-export const LandingPage = ({ onCreateSession }: LandingPageProps) => {
+export const LandingPage = ({ onCreateSession, isCreating = false }: LandingPageProps) => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="h-14 border-b border-border px-6 flex items-center">
@@ -32,10 +33,11 @@ export const LandingPage = ({ onCreateSession }: LandingPageProps) => {
           <Button
             size="lg"
             onClick={onCreateSession}
+            disabled={isCreating}
             className="gap-2 w-full max-w-xs"
           >
             <Plus className="h-5 w-5" />
-            Create Interview Session
+            {isCreating ? 'Creating...' : 'Create Interview Session'}
           </Button>
 
           <div className="grid grid-cols-3 gap-4 pt-8">
