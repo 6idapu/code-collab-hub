@@ -2,186 +2,166 @@
 
 FastAPI backend for the CodeInterview collaborative code interview platform.
 
-## Features
+## Quick Start
 
-- Real-time collaborative coding sessions
-- Multi-user support (up to 10 users per session)
-- Code execution for Python (with sandboxing)
-- Session management
-- Mock database (ready to replace with real database)
+### Prerequisites
+- Python 3.12+
+- Virtual environment (`.venv`) activated
+
+### 1. Start the Server
+```bash
+python main.py
+```
+
+The API will be available at `http://localhost:8000`
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+### 2. Run Tests
+```bash
+# All tests
+python -m pytest tests/ -v
+
+# Specific test file
+python -m pytest tests/test_sessions.py -v
+
+# With coverage
+python -m pytest tests/ --cov=app
+```
+
+## API Endpoints
+
+### Sessions
+- `POST /api/v1/sessions` - Create session
+- `GET /api/v1/sessions/{sessionId}` - Get session
+- `PATCH /api/v1/sessions/{sessionId}` - Update session
+- `DELETE /api/v1/sessions/{sessionId}` - Delete session
+
+### Users
+- `POST /api/v1/sessions/{sessionId}/users` - Join session
+- `GET /api/v1/sessions/{sessionId}/users` - Get users
+- `DELETE /api/v1/sessions/{sessionId}/users/{userId}` - Leave session
+
+### Code Execution
+- `POST /api/v1/execute` - Execute code (Python/JavaScript/TypeScript)
+
+### Health
+- `GET /api/v1/health` - Health check
+
+## Example API Requests
+
+### Create a Session
+```bash
+curl -X POST http://localhost:8000/api/v1/sessions \
+  -H "Content-Type: application/json" \
+  -d '{"language": "python", "code": "print(\"Hello\")"}'
+```
+
+### Join a Session
+```bash
+curl -X POST http://localhost:8000/api/v1/sessions/{sessionId}/users \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Developer1"}'
+```
+
+### Execute Code
+```bash
+curl -X POST http://localhost:8000/api/v1/execute \
+  -H "Content-Type: application/json" \
+  -d '{"code": "print(2 + 2)", "language": "python"}'
+```
 
 ## Project Structure
 
 ```
 backend/
 ├── app/
-│   ├── models/          # Pydantic models and schemas
-│   ├── routes/          # API route handlers
-│   ├── services/        # Business logic (database, execution)
-│   └── __init__.py      # FastAPI app factory
-├── tests/               # Test suite
-├── main.py              # Entry point
-├── pyproject.toml       # Project configuration
-└── README.md            # This file
+│   ├── __init__.py              # FastAPI app factory
+│   ├── models/
+│   │   └── schema.py            # Pydantic models
+│   ├── routes/
+│   │   ├── sessions.py          # Session endpoints
+│   │   ├── users.py             # User endpoints
+│   │   ├── execution.py         # Code execution
+│   │   └── health.py            # Health check
+│   └── services/
+│       ├── database.py          # Mock in-memory database
+│       └── execution.py         # Code execution logic
+├── tests/                       # Test suite (43 tests)
+├── main.py                      # Entry point
+├── pyproject.toml               # Dependencies
+└── IMPLEMENTATION.md            # Detailed architecture
 ```
 
-## Installation
+## Features
 
-1. Install dependencies (using uv):
-```bash
-uv sync
-```
+✅ **Session Management**
+- Create, update, delete sessions
+- Support for JavaScript, TypeScript, Python
+- Session status tracking (active/completed)
 
-2. Or using pip:
-```bash
-pip install -r requirements.txt
-```
+✅ **User Management**
+- Join/leave sessions
+- Max 10 users per session
+- Auto-assigned colors and names
 
-## Running the Server
+✅ **Code Execution**
+- Python: Sandboxed execution
+- JavaScript/TypeScript: Browser execution recommended
+- Execution time tracking
 
-```bash
-uv run python main.py
-```
-
-The API will be available at `http://localhost:8000`
-
-API documentation (Swagger UI): `http://localhost:8000/docs`
-Alternative documentation (ReDoc): `http://localhost:8000/redoc`
-
-## Running Tests
-
-Run all tests:
-```bash
-uv run pytest
-```
-
-Run tests with verbose output:
-```bash
-uv run pytest -v
-```
-
-Run specific test file:
-```bash
-uv run pytest tests/test_sessions.py -v
-```
-
-Run tests with coverage:
-```bash
-uv run pytest --cov=app tests/
-```
-
-## API Endpoints
-
-### Sessions
-- `POST /api/v1/sessions` - Create a new session
-- `GET /api/v1/sessions/{sessionId}` - Get session details
-- `PATCH /api/v1/sessions/{sessionId}` - Update session
-- `DELETE /api/v1/sessions/{sessionId}` - Delete session
-
-### Users
-- `POST /api/v1/sessions/{sessionId}/users` - Join a session
-- `GET /api/v1/sessions/{sessionId}/users` - Get session users
-- `DELETE /api/v1/sessions/{sessionId}/users/{userId}` - Leave session
-
-### Code Execution
-- `POST /api/v1/execute` - Execute code
-
-### Health
-- `GET /api/v1/health` - Health check
-
-## Database
-
-Currently uses a mock in-memory database. To replace with a real database:
-
-1. Modify `app/services/database.py`
-2. Update `MockDatabase` class to use your preferred ORM (SQLAlchemy, etc.)
-3. Update connection strings and models
-
-## Code Execution
-
-The backend supports:
-- **Python**: Executed in a restricted environment with limited built-ins
-- **JavaScript/TypeScript**: Message returned suggesting browser execution
-
-For production use, consider:
-- Using a proper sandbox (Docker, VM)
-- Adding timeout enforcement
-- Rate limiting
-- Resource limits
-
-## Testing
-
-Test coverage includes:
-- **Unit tests**: Individual endpoint testing
-- **Integration tests**: Complete workflows
-- **Error handling**: Invalid inputs and edge cases
-
-Test files:
-- `tests/test_sessions.py` - Session endpoint tests
-- `tests/test_users.py` - User endpoint tests
-- `tests/test_execution.py` - Code execution tests
-- `tests/test_health.py` - Health check tests
-- `tests/test_integration.py` - Integration tests
-
-## Development
-
-### Adding a new dependency
-```bash
-uv add <package-name>
-```
-
-### Running in development mode
-```bash
-uv run python main.py
-```
-
-The server will reload on code changes thanks to Uvicorn's reload mode.
-
-### Code style
-Current codebase follows PEP 8 conventions. Consider adding:
-- Black for code formatting
-- Flake8 for linting
-- MyPy for type checking
+✅ **Test Coverage**
+- 43 unit & integration tests
+- Happy path and error scenarios
+- Capacity limits and edge cases
 
 ## Configuration
 
-Environment variables (can be set in `.env`):
-- `PYTHONUNBUFFERED=1` - Unbuffered Python output
-- `HOST=0.0.0.0` - Server host
-- `PORT=8000` - Server port
+The API uses:
+- **Database**: In-memory mock (replace in `app/services/database.py`)
+- **Execution**: Python sandbox (JavaScript requires Node.js runtime)
+- **CORS**: Enabled for all origins (restrict in `app/__init__.py` for production)
 
-## Error Handling
+## Development
 
-The API returns standard HTTP status codes:
-- `200` - Success
-- `201` - Created
-- `204` - No Content
-- `400` - Bad Request
-- `404` - Not Found
-- `409` - Conflict (e.g., session at capacity)
-- `500` - Internal Server Error
-
-Error responses include:
-```json
-{
-  "error": "ERROR_CODE",
-  "message": "Human-readable message",
-  "statusCode": 400
-}
+### Run with hot reload
+```bash
+python main.py
 ```
 
-## CORS
+### Add dependencies
+Update `pyproject.toml` and sync with `uv sync`
 
-The API includes CORS middleware allowing requests from all origins. For production, restrict this in `app/__init__.py`.
+## Troubleshooting
 
-## License
+### Port Already in Use
+```bash
+# Kill process on port 8000
+lsof -ti:8000 | xargs kill -9  # macOS/Linux
+```
 
-See LICENSE file
+### Test Failures
+```bash
+python -m pytest tests/ -vv
+```
 
-## Contributing
+### Virtual Environment Issues
+```bash
+python -m venv .venv
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+pip install -e .
+```
 
-1. Create a feature branch
-2. Make changes
-3. Run tests to ensure they pass
-4. Create a commit with descriptive message
-5. Submit pull request
+## Next Steps
+
+1. Replace mock database with PostgreSQL/MongoDB
+2. Add WebSocket for real-time collaboration
+3. Implement authentication
+4. Add proper code execution sandbox (Docker)
+5. Deploy to cloud
+
+## References
+
+- [OpenAPI Specification](../openapi.yaml)
+- [API Analysis](../API_ANALYSIS.md)
+- [Implementation Details](./IMPLEMENTATION.md)

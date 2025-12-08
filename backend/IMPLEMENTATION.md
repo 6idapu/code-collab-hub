@@ -93,19 +93,6 @@ backend/
 ✅ User lifecycle management
 ✅ Code execution with various languages
 
-## Running the Application
-
-```bash
-# Install dependencies with uv
-uv sync
-
-# Run tests
-uv run pytest tests/ -v
-
-# Run the application
-uv run python main.py
-```
-
 ## Dependencies
 - **fastapi** - Web framework
 - **uvicorn** - ASGI server
@@ -114,6 +101,10 @@ uv run python main.py
 - **pytest** - Testing framework
 - **pytest-asyncio** - Async test support
 - **httpx** - HTTP testing client
+
+## Running the Application
+
+See [README.md](./README.md) for setup instructions.
 
 ## Next Steps for Production
 1. Replace mock database with real database (PostgreSQL/MongoDB)
@@ -132,8 +123,4 @@ Once running, access:
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
-## Notes
-- Mock database stores sessions in-memory (data lost on restart)
-- JavaScript/TypeScript execution is recommended for frontend (server-side execution would require Node.js runtime)
-- Python execution uses a restricted safe environment
-- All timestamps are Unix milliseconds for consistency with frontend
+For quick start instructions, see [README.md](./README.md).
