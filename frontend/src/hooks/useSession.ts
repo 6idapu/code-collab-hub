@@ -1,8 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Session, User, Language, SessionStatus } from '@/types/interview';
 import { sessionsApi, usersApi, ApiError } from '@/services/api';
 
 const MAX_USERS = 10;
+const POLL_INTERVAL = 1000; // Poll every 1 second for real-time updates
 
 export const useSession = (sessionId: string | null) => {
   const [session, setSession] = useState<Session | null>(null);
@@ -10,6 +11,7 @@ export const useSession = (sessionId: string | null) => {
   const [isAtCapacity, setIsAtCapacity] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const createSession = useCallback(async (): Promise<string> => {
     try {
@@ -160,6 +162,41 @@ export const useSession = (sessionId: string | null) => {
       setIsLoading(false);
     }
   }, []);
+
+  // Start polling for session updates when sessionId is active and user has joined
+  useEffect(() => {
+    if (!sessionId || !currentUser) {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
+      }
+      return;
+    }
+
+    // Poll immediately and then at interval
+    const pollSession = async () => {
+      try {
+        const updatedSession = await sessionsApi.get(sessionId);
+        setSession(updatedSession);
+      } catch (err) {
+        // Silent fail on poll errors to avoid disrupting user experience
+        console.debug('Failed to poll session:', err);
+      }
+    };
+
+    // Initial poll
+    pollSession();
+
+    // Set up interval
+    pollIntervalRef.current = setInterval(pollSession, POLL_INTERVAL);
+
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
+      }
+    };
+  }, [sessionId, currentUser]);
 
   return {
     session,

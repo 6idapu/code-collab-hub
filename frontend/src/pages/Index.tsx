@@ -17,9 +17,14 @@ const Index = () => {
 
   const { createSession, isAtCapacity } = useSession(activeSessionId);
 
+  // When URL changes (including on refresh or when link is shared), update active session
   useEffect(() => {
-    if (sessionIdFromUrl) {
+    if (sessionIdFromUrl && sessionIdFromUrl !== activeSessionId) {
       setActiveSessionId(sessionIdFromUrl);
+      setCreationError(null);
+    } else if (!sessionIdFromUrl && activeSessionId) {
+      // User navigated back home
+      setActiveSessionId(null);
     }
   }, [sessionIdFromUrl]);
 
