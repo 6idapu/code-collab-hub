@@ -129,6 +129,38 @@ export const useSession = (sessionId: string | null) => {
     }
   }, []);
 
+  const loadAndJoinSession = useCallback(async (id: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      // Load session
+      const sessionData = await sessionsApi.get(id);
+      setSession(sessionData);
+      
+      // Join session
+      const user = await usersApi.join(id);
+      setCurrentUser(user);
+      setIsAtCapacity(false);
+      
+      return user;
+    } catch (err) {
+      if (err instanceof ApiError) {
+        if (err.statusCode === 409) {
+          setIsAtCapacity(true);
+          setError('Session is at capacity');
+          return null;
+        }
+        setError(err.message);
+      } else {
+        setError('Failed to join session');
+      }
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   return {
     session,
     currentUser,
@@ -142,6 +174,7 @@ export const useSession = (sessionId: string | null) => {
     leaveSession,
     markAsDone,
     loadSession,
+    loadAndJoinSession,
     maxUsers: MAX_USERS,
   };
 };

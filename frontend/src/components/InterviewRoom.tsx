@@ -22,19 +22,19 @@ export const InterviewRoom = ({ sessionId, onExit }: InterviewRoomProps) => {
     updateLanguage,
     leaveSession,
     markAsDone,
-    loadSession,
+    loadAndJoinSession,
     maxUsers,
     isLoading,
     error,
   } = useSession(sessionId);
   const { executeCode, result, isExecuting } = useCodeExecution();
 
-  // Load session on mount
+  // Load and join session on mount
   useEffect(() => {
     if (sessionId) {
-      loadSession(sessionId);
+      loadAndJoinSession(sessionId);
     }
-  }, [sessionId, loadSession]);
+  }, [sessionId, loadAndJoinSession]);
 
   const handleExit = async () => {
     await leaveSession();

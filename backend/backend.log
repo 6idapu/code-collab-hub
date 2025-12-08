@@ -1,0 +1,49 @@
+nohup: ignoring input
+INFO:     Will watch for changes in these directories: ['/home/fs/homework-02/code-collab-hub/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [21945] using StatReload
+INFO:     Started server process [21950]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:43646 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:43654 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:47496 - "OPTIONS /api/v1/sessions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47496 - "POST /api/v1/sessions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:47496 - "GET /api/v1/sessions/760kqo1omj HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55856 - "POST /api/v1/sessions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55856 - "GET /api/v1/sessions/49zc3t1sav HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40258 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:40264 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:40278 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40278 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51810 - "POST /api/v1/sessions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:41076 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40376 - "POST /api/v1/sessions/8tbupmnzfo/users HTTP/1.1" 201 Created
+INFO:     127.0.0.1:53322 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53326 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53322 - "GET /api HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53326 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:53322 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53322 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47918 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34986 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34992 - "POST /api/v1/sessions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:34986 - "GET /api/v1/sessions/itd5los2d5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34992 - "POST /api/v1/sessions/itd5los2d5/users HTTP/1.1" 201 Created
+INFO:     127.0.0.1:34986 - "POST /api/v1/execute HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34992 - "PATCH /api/v1/sessions/itd5los2d5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52560 - "GET /api/v1/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52566 - "POST /api/v1/sessions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:52560 - "GET /api/v1/sessions/mbliwnji6n HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52566 - "POST /api/v1/sessions/mbliwnji6n/users HTTP/1.1" 201 Created
+INFO:     127.0.0.1:52560 - "POST /api/v1/execute HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52566 - "PATCH /api/v1/sessions/mbliwnji6n HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41634 - "POST /api/v1/sessions HTTP/1.1" 201 Created
+INFO:     127.0.0.1:41634 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51300 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:32828 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49460 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59384 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59398 - "GET /api/v1/sessions/evhz2wbai3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59398 - "OPTIONS /api/v1/sessions/evhz2wbai3/users HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59398 - "POST /api/v1/sessions/evhz2wbai3/users HTTP/1.1" 201 Created
