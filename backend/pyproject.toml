@@ -20,8 +20,8 @@ dev = [
     "httpx>=0.26.0",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "pytest>=7.4.4",
     "pytest-asyncio>=0.23.2",
     "httpx>=0.26.0",
