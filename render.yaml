@@ -1,0 +1,18 @@
+# Render service configuration for deploying the combined frontend + backend container
+services:
+  - type: web
+    name: code-collab-hub
+    env: docker
+    branch: main
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    # Render sets $PORT automatically; UVicorn respects it via Dockerfile CMD
+    startCommand: "uvicorn app:create_app --host 0.0.0.0 --port $PORT --factory"
+    autoDeploy: true
+    healthCheckPath: "/api/v1/health"
+    envVars:
+      - key: ENV
+        value: production
+      - key: DATABASE_URL
+        # Please configure a managed DB in Render or point to an external DB
+        value: "sqlite:///backend/code_interview.db"

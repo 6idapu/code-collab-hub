@@ -31,4 +31,4 @@ COPY --from=frontend-builder /app/frontend/dist ./backend/frontend/dist
 EXPOSE 8000
 
 WORKDIR /app/backend
-CMD ["uvicorn", "app:create_app", "--host", "0.0.0.0", "--port", "8000", "--factory"]
+CMD ["sh", "-c", "uvicorn app:create_app --host 0.0.0.0 --port ${PORT:-8000} --factory"]
