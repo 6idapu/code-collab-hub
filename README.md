@@ -123,7 +123,7 @@ See [API_ANALYSIS.md](./API_ANALYSIS.md) for full OpenAPI specification.
 
 **Backend:**
 - FastAPI 0.109+
-- Uvicorn 0.27+
+св 0.27+
 - Pydantic 2.6+
 - Python-nanoid 4.0+
 - pytest 7.4+ with async support

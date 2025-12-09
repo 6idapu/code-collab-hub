@@ -29,6 +29,7 @@ wheels/
 .venv
 venv/
 ENV/
+bin/
 
 # IDE
 .vscode/
