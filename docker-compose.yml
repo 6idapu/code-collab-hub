@@ -7,5 +7,22 @@ services:
     ports:
       - '8000:8000'
     environment:
-      PYTHONUNBUFFERED: '1'
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/code_interview
     restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: code_interview
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+volumes:
+  db_data:
+    driver: local

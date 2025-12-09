@@ -11,17 +11,15 @@ from app.models import Session, User, Language, SessionStatus
 class Database:
     """SQLAlchemy database service for sessions and users."""
 
-    def __init__(self, database_url: str = "sqlite:///./code_interview.db"):
+    def __init__(self, database_url: str = "postgresql://postgres:postgres@db:5432/code_interview"):
         """Initialize database connection.
         
         Args:
             database_url: Database connection string (default: SQLite file)
         """
-        self.engine = create_engine(
-            database_url,
-            connect_args={"check_same_thread": False} if "sqlite" in database_url else {},
-            echo=False,  # Set to True for SQL debugging
-        )
+        connect_args = {"check_same_thread": False} if "sqlite" in database_url else {}
+        # For Postgres, prefer using psycopg drivers (psycopg-binary) which provides required lib
+        self.engine = create_engine(database_url, connect_args=connect_args, echo=False)
         self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
         
         # Create tables
@@ -199,5 +197,5 @@ class Database:
 
 
 # Global database instance
-database_url = os.getenv("DATABASE_URL", "sqlite:///./code_interview.db")
+database_url = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@db:5432/code_interview")
 db = Database(database_url)
