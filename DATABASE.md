@@ -257,12 +257,3 @@ Example session response (identical before and after):
   "status": "active"
 }
 ```
-
-## Future Enhancements
-
-- [ ] Database migrations tool (Alembic)
-- [ ] Connection pooling optimization
-- [ ] Session archival (move old sessions to archive table)
-- [ ] User authentication and sessions per user
-- [ ] Query performance indexes
-- [ ] Read replicas for high-traffic scenarios
