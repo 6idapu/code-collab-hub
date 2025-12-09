@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy and install python backend
 COPY backend/ ./backend
 WORKDIR /app/backend
-RUN pip install --upgrade pip setuptools wheel && pip install --no-cache-dir ./
+RUN pip install --upgrade pip setuptools wheel && pip install --no-cache-dir -e ./
 
 # Copy built frontend assets into backend static folder
 WORKDIR /app
