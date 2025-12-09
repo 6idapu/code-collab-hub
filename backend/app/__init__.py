@@ -38,20 +38,7 @@ def create_app() -> FastAPI:
     # Serve built frontend static files if present
     static_dir = Path(__file__).resolve().parent.parent / 'frontend' / 'dist'
     if static_dir.exists():
-        app.mount('/static', StaticFiles(directory=str(static_dir)), name='static')
-
-        # Serve index.html for the root path and any non-API routes (SPA)
-        @app.get('/', include_in_schema=False)
-        def _root_index():
-            return FileResponse(static_dir / 'index.html')
-
-        @app.get('/{full_path:path}', include_in_schema=False)
-        def _spa_index(full_path: str):
-            # Don't override API or docs routes - let FastAPI return 404 or match other routers
-            if full_path.startswith('api') or full_path.startswith('_') or full_path.startswith('docs'):
-                from fastapi import HTTPException
-
-                raise HTTPException(status_code=404)
-            return FileResponse(static_dir / 'index.html')
+        # Mount the build at root so paths like '/assets' resolve correctly
+        app.mount('/', StaticFiles(directory=str(static_dir), html=True), name='frontend')
 
     return app
