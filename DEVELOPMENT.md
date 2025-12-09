@@ -113,6 +113,23 @@ docker run -p 8000:8000 code-collab-hub:latest
 
 This image builds the Vite frontend in a Node stage, copies build artifacts into the backend (backend/frontend/dist), and serves the built app via FastAPI + Uvicorn.
 
+### Docker Compose (single container)
+
+Use docker-compose to build & run the same single container image:
+
+```bash
+# Build & run in foreground
+docker-compose up --build
+
+# Or run in detached mode
+docker-compose up --build -d
+
+# Stop & remove
+docker-compose down
+```
+
+Note: `docker-compose up --build` will build the image from `Dockerfile` and run the container exposing `8000` to the host. Replace or add volumes in a `docker-compose.override.yml` if you want live-code mounts during development.
+
 ## Features
 
 ✅ Create collaborative code interview sessions
