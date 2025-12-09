@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import type { ExecutionResult, Language } from '@/types/interview';
 import { executionApi, ApiError } from '@/services/api';
+import { runPythonWithPyodide } from '@/services/pyodideLoader';
 
 export const useCodeExecution = () => {
   const [isExecuting, setIsExecuting] = useState(false);
@@ -13,6 +14,24 @@ export const useCodeExecution = () => {
       setError(null);
 
       try {
+        if (language === 'python') {
+          try {
+            const start = performance.now();
+            const out = await runPythonWithPyodide(code, 30000);
+            const duration = performance.now() - start;
+            const executionResult: ExecutionResult = {
+              output: out.output || '',
+              error: out.error || null,
+              executionTime: Math.round(duration),
+            };
+            setResult(executionResult);
+            return executionResult;
+          } catch (pyErr) {
+            // Fall through to backend execution below
+            // eslint-disable-next-line no-console
+            console.warn('Pyodide execution failed, falling back to backend', pyErr);
+          }
+        }
         const executionResult = await executionApi.execute(code, language, 30000);
         setResult(executionResult);
         return executionResult;

@@ -59,6 +59,7 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+ - Pyodide (client-side Python via WebAssembly) — the UI now executes Python code in-browser using Pyodide and falls back to backend execution if needed.
 
 ## How can I deploy this project?
 
