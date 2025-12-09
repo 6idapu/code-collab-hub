@@ -118,7 +118,9 @@ backend/
 ## Configuration
 
 The API uses:
-- **Database**: In-memory mock (replace in `app/services/database.py`)
+- **Database**: PostgreSQL is the default in production; set `DATABASE_URL`.
+  - For local development, `docker-compose up --build` includes a Postgres service and sets `DATABASE_URL` automatically.
+  - You can still fallback to SQLite by setting `DATABASE_URL` to a sqlite URL like `sqlite:///./code_interview.db`.
 - **Execution**: Python sandbox (JavaScript requires Node.js runtime)
 - **CORS**: Enabled for all origins (restrict in `app/__init__.py` for production)
 
