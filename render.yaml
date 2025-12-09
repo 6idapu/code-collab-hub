@@ -6,8 +6,7 @@ services:
     branch: main
     plan: starter
     dockerfilePath: ./Dockerfile
-    # Render sets $PORT automatically; UVicorn respects it via Dockerfile CMD
-    startCommand: "uvicorn app:create_app --host 0.0.0.0 --port $PORT --factory"
+    # Render sets $PORT automatically; the Dockerfile's CMD respects $PORT
     autoDeploy: true
     healthCheckPath: "/api/v1/health"
     envVars:
