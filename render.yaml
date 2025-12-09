@@ -12,6 +12,4 @@ services:
     envVars:
       - key: ENV
         value: production
-      - key: DATABASE_URL
-        # Please configure a managed DB in Render or point to an external DB
-        value: "sqlite:///backend/code_interview.db"
+      # Configure `DATABASE_URL` in Render dashboard to point to a managed Postgres instance
