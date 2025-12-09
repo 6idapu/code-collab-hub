@@ -14,6 +14,8 @@ This guide explains how to deploy this application to Yandex Cloud using Contain
 - `YC_FOLDER_ID` — Yandex Cloud folder ID (we used `b1geur9773l61i3b3a7a`).
 - `YC_REGISTRY_NAME` — The registry name you created in Yandex Cloud.
 - `YC_REGISTRY_URL` — Registry URL (e.g. `cr.yandex/<REGISTRY_ID>`).
+ - `YC_SERVICE_NAME` — Name for the serverless container service (e.g., `code-collab-hub`).
+ - `YC_REGION` — Yandex region (e.g. `ru-central1`).
 
 ## Steps (Manual)
 

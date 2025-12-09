@@ -54,3 +54,19 @@ jobs:
 
       - name: Set output image
         run: echo "IMAGE=${{ secrets.YC_REGISTRY_URL }}/$IMAGE_NAME:${GITHUB_SHA}" >> $GITHUB_OUTPUT
+
+      - name: Create or update Yandex Serverless Container service
+        run: |
+          SERVICE_NAME=${{ secrets.YC_SERVICE_NAME }}
+          IMAGE_URL=${{ secrets.YC_REGISTRY_URL }}/$IMAGE_NAME:${GITHUB_SHA}
+          # Create service if it doesn't exist
+          if ! yc serverless container get --name $SERVICE_NAME --folder-id ${{ secrets.YC_FOLDER_ID }} >/dev/null 2>&1; then
+            yc serverless container create --name $SERVICE_NAME --folder-id ${{ secrets.YC_FOLDER_ID }} --memory 512M --concurrency 50 --region ${{ secrets.YC_REGION }}
+          fi
+          # Create a new version pointing to the new image
+          yc serverless container version create --service-name $SERVICE_NAME --container-image $IMAGE_URL
+        env:
+          YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
+          YC_FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
+          YC_REGION: ${{ secrets.YC_REGION }}
+          YC_SERVICE_NAME: ${{ secrets.YC_SERVICE_NAME }}
