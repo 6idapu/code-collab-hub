@@ -130,6 +130,14 @@ docker-compose down
 
 Note: `docker-compose up --build` will build the image from `Dockerfile` and run the container exposing `8000` to the host. Replace or add volumes in a `docker-compose.override.yml` if you want live-code mounts during development.
 
+This docker-compose also starts a Postgres database for local development:
+
+```bash
+docker-compose up --build
+```
+
+By default the Postgres connection is `postgresql://postgres:postgres@db:5432/code_interview` and the backend reads this value from `DATABASE_URL` environment variable. For production, use a managed Postgres instance and set `DATABASE_URL` accordingly.
+
 ## Features
 
 ✅ Create collaborative code interview sessions
