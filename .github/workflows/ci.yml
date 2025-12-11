@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 env:
-  FOLDER_ID: $YC_FOLDER_ID
+  FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
   SA_ID: ajeufd6uc5162q0vn0vq
   FUNCTION_NAME: from-github-ci
   FUNCTION_RUNTIME: nodejs22
