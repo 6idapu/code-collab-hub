@@ -1,19 +1,5 @@
 {
-  "name": "code-collab-hub",
-  "version": "0.1.0",
-  "description": "Real-time collaborative code interview platform",
-  "private": true,
-  "scripts": {
-    "dev": "concurrently \"./start-backend.sh\" \"./start-frontend.sh\"",
-    "dev:backend": "./start-backend.sh",
-    "dev:frontend": "./start-frontend.sh",
-    "build": "npm run build:frontend",
-    "build:frontend": "cd frontend && npm run build",
-    "test": "cd backend && source .venv/bin/activate && python -m pytest -v",
-    "test:backend": "cd backend && source .venv/bin/activate && python -m pytest -v",
-    "test:frontend": "cd frontend && npm run lint"
-  },
-  "devDependencies": {
-    "concurrently": "^9.1.2"
-  }
+  "name": "from-github",
+  "version": "1.0.0"
 }
+
