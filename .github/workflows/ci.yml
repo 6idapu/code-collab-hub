@@ -12,7 +12,7 @@ on:
 
 env:
   FOLDER_ID: ${{ secrets.YC_FOLDER_ID }}
-  SA_ID: ajeufd6uc5162q0vn0vq
+  SA_ID: ${{ secrets.SA_ID }}
   FUNCTION_NAME: from-github-ci
   FUNCTION_RUNTIME: nodejs22
   FUNCTION_ENTRYPOINT: index.handler
